@@ -23,6 +23,7 @@ CLI çıktısında bağlam/uyarı amaçlı raporlanır.
 from __future__ import annotations
 
 import argparse
+import json
 
 
 def classify_fe(fe_ppm: int) -> str:
@@ -100,6 +101,11 @@ def parse_args() -> argparse.Namespace:
         required=True,
         help="Temperature (°C) (bilgi amaçlı)",
     )
+    p.add_argument(
+        "--json",
+        action="store_true",
+        help="JSON çıktı üret (text output yerine)",
+    )
     return p.parse_args()
 
 
@@ -109,10 +115,26 @@ def main() -> None:
     severity, fe_class = compute_severity(fe_ppm=args.fe_ppm, pitting=args.pitting)
     rec = recommendation_for_severity(severity)
 
+    if args.json:
+        payload = {
+            "severity": severity,
+            "fe_class": fe_class,
+            "recommendation": rec,
+            "context": {
+                "pitting": args.pitting,
+                "vibration": args.vibration,
+                "temperature": args.temperature,
+            },
+        }
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return
+
     print(f"Severity: {severity}/5")
     print(f"Fe class: {fe_class} ({args.fe_ppm} ppm)")
     print(f"Recommendation: {rec}")
-    print(f"Context: pitting={args.pitting}, vibration={args.vibration} mm/s, temperature={args.temperature} °C")
+    print(
+        f"Context: pitting={args.pitting}, vibration={args.vibration} mm/s, temperature={args.temperature} °C"
+    )
 
 
 if __name__ == "__main__":

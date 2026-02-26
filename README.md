@@ -25,9 +25,16 @@ Parametreler:
 - `--pitting` (yes/no)
 - `--vibration` (float, mm/s) (bu sürümde bilgi amaçlı)
 - `--temperature` (float, °C) (bu sürümde bilgi amaçlı)
+- `--json` (flag) JSON çıktı üretir
 
-Örnek:
+Örnek (text output):
 
 ```bash
 python gearbox_severity.py --fe-ppm 54 --pitting yes --vibration 0.8 --temperature 65
+```
+
+Örnek (JSON output):
+
+```bash
+python gearbox_severity.py --fe-ppm 54 --pitting yes --vibration 0.8 --temperature 65 --json
 ```
